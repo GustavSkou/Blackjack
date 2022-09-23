@@ -12,6 +12,7 @@ player_cards_value = []
 
 x = 2
 player_sum = 0
+dealer_sum = 0
 
 while len(dealer_cards) != 2:                                                                   # Generate dealer's cards
     ran = random.uniform(0, 13)
@@ -26,9 +27,9 @@ while len(player_cards) != x:                                                   
 print(dealer_cards[0])
 print(player_cards)
 
-while(player_sum <= 20):
+while player_sum <= 20:
+    player_sum = sum(player_cards_value)
     dealer_sum = sum(dealer_cards_value)
-
     choice = input("stand or hit ")
     if choice == "stand":
         print(dealer_cards[0], end=" ")
@@ -42,7 +43,7 @@ while(player_sum <= 20):
         player_cards_value.append(cards_value[int(ran)])
         player_sum = sum(player_cards_value)
 
-        print(dealer_cards)
+        print(dealer_cards[0])
         print(player_cards, end=" ")
         print(player_sum)
 
@@ -50,7 +51,7 @@ if player_sum > 21:
     print("Crash")
 elif dealer_sum-player_sum == 0:
     print("tie")
-elif dealer_sum-player_sum > 0:
-    print("win")
 elif dealer_sum-player_sum < 0:
+    print("win")
+elif dealer_sum-player_sum > 0:
     print("lost")
