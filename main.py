@@ -24,16 +24,15 @@ while len(player_cards) != x:                                                   
     player_cards.append(cards[int(ran)])
     player_cards_value.append(cards_value[int(ran)])
 
-print(dealer_cards[0])
-print(player_cards)
+print("player: " + player_cards[0] + " " + player_cards[1])
+print("Dealer: " + dealer_cards[0])
 
 while player_sum <= 20:
     player_sum = sum(player_cards_value)
     dealer_sum = sum(dealer_cards_value)
     choice = input("stand or hit ")
     if choice == "stand":
-        print(dealer_cards[0], end=" ")
-        print(dealer_cards[1])
+        print("Player: ", end="")
         print(player_cards)
         break
 
@@ -43,15 +42,27 @@ while player_sum <= 20:
         player_cards_value.append(cards_value[int(ran)])
         player_sum = sum(player_cards_value)
 
-        print(dealer_cards[0])
+        print("Player: ", end="")
         print(player_cards, end=" ")
         print(player_sum)
+        print("Dealer: ", end="")
+        print(dealer_cards[0])
+
+
+while dealer_sum < 17:
+    ran = random.uniform(0, 13)
+    dealer_cards.append(cards[int(ran)])
+    dealer_cards_value.append(cards_value[int(ran)])
+    dealer_sum = sum(dealer_cards_value)
+    print("Dealer: ", end="")
+    print(dealer_cards, end="")
+    print(dealer_sum)
 
 if player_sum > 21:
     print("Crash")
 elif dealer_sum-player_sum == 0:
     print("tie")
-elif dealer_sum-player_sum < 0:
+elif dealer_sum-player_sum < 0 or dealer_sum > 21:
     print("win")
 elif dealer_sum-player_sum > 0:
     print("lost")
