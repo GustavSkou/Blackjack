@@ -4,7 +4,13 @@ random.seed()
 cards = ["ace", "two", "tree", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen", "king"]
 cards_value = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
-for x in range(1000):
+money = 100
+money_won = 0
+money_lost = 0
+
+playing = input("Is it gambling time?(yes/no) ")
+
+while playing == "yes":
     # Creating empty lists for the hands to be generated into
     dealer_cards = []
     dealer_cards_value = []
@@ -13,6 +19,19 @@ for x in range(1000):
 
     player_sum = 0
     dealer_sum = 0
+    allow_bet = 0
+
+    print("you have", end=" ")
+    print(money)
+    bet = input("bet: ")
+    Bet = int(bet)
+    while allow_bet == 0:
+        if Bet <= money:
+            money = money - Bet
+            allow_bet = 1
+        else:
+            bet = input("try again. bet: ")
+            Bet = int(bet)
 
     while len(dealer_cards) != 2:                                                       # Generate dealer's first pair of cards and get sum of the cards
         dealer_cards_drawn = len(dealer_cards)                                          # The length of the list is taken before we generate a card, so that it will be -1 the real length. This makes it so we can use it to find the newest card in the hand
@@ -99,14 +118,30 @@ for x in range(1000):
 
         print("Dealer: ", end="")
         print(dealer_cards, end=" ")
-        print(dealer_sum, end=" ")
-        print("aces ", end=" ")
+        print(dealer_sum)
 
-    if player_sum > 21:
-        print("Crash")
+    if (dealer_cards_value[0] == 11 and dealer_cards_value[1] == 10) or (dealer_cards_value[1] == 11 and dealer_cards_value[0] == 10):
+        money = money + Bet * 3 + Bet
+        print("Blackjack +", end="")
+        print(Bet*3)
+    elif player_sum > 21:
+        print("crash -", end="")
+        print(Bet)
     elif dealer_sum - player_sum == 0:
+        money = money + Bet
         print("tie")
     elif dealer_sum - player_sum < 0 or dealer_sum > 21:
-        print("win")
+        money = money + Bet * 2 + Bet
+        print("win +", end="")
+        print(Bet*2)
     elif dealer_sum - player_sum > 0:
-        print("lost")
+        print("lost. -", end="")
+        print(Bet)
+
+    answer = 0
+    while answer == 0:
+        playing = input("play again? (yes/no) " )
+        if playing == "yes" or "no":
+            answer = 1
+        else:
+            answer = 0
