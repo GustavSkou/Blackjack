@@ -5,9 +5,6 @@ cards = ["ace", "two", "tree", "four", "five", "six", "seven", "eight", "nine", 
 cards_value = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
 
 for x in range(1000):
-    player_aces = 0    # Keeps tracks of aces
-    dealer_aces = 0
-
     # Creating empty lists for the hands to be generated into
     dealer_cards = []
     dealer_cards_value = []
@@ -17,40 +14,49 @@ for x in range(1000):
     player_sum = 0
     dealer_sum = 0
 
-    while len(dealer_cards) != 2:                                                                   # Generate dealer's cards
-        ran = random.uniform(0, 13)
-        dealer_cards.append(cards[int(ran)])
-        dealer_cards_value.append(cards_value[int(ran)])
+    while len(dealer_cards) != 2:                                                       # Generate dealer's first pair of cards and get sum of the cards
+        dealer_cards_drawn = len(dealer_cards)                                          # The length of the list is taken before we generate a card, so that it will be -1 the real length. This makes it so we can use it to find the newest card in the hand
 
-    while len(player_cards) != 2:                                                                   # Generate player's cards
-        ran = random.uniform(0, 13)
-        player_cards.append(cards[int(ran)])
-        player_cards_value.append(cards_value[int(ran)])
+        def gen_dealer_card():                                                          # Creating the function to generate a random card
+            ran = random.uniform(0, 13)
+            dealer_cards.append(cards[int(ran)])
+            dealer_cards_value.append(cards_value[int(ran)])
+        gen_dealer_card()
 
-    for item in player_cards:                                                                       # Keeps tally of player's aces
-        if item == "ace":
-            player_aces = player_aces + 1
-    if player_aces >= 1:
-        player_sum = sum(player_cards_value)-(player_aces-1)*10
-    else:
-        player_sum = sum(player_cards_value)
+        dealer_new_card = dealer_cards_value[dealer_cards_drawn]                        # We use the length of the list from before to find the newest card
 
-    for item in dealer_cards:                                                                       # Keeps tally of dealer's aces
-        if item == "ace":
-            dealer_aces = dealer_aces + 1
-    if dealer_aces >= 1:
-        dealer_sum = sum(dealer_cards_value)-(dealer_aces-1)*10
-    else:
-        dealer_sum = sum(dealer_cards_value)
+        if dealer_cards_value[dealer_cards_drawn] != 11:                                # If the newest card is not an ace we can simply add the cards value to the score
+            dealer_sum = dealer_sum + dealer_new_card
+        elif dealer_cards_value[dealer_cards_drawn] == 11 and dealer_sum + 11 <= 21:    # If the newest card is an ace and the score plus 11 is 21 or less we can add 11 as the aces value
+            dealer_sum = dealer_sum + dealer_new_card
+        else:                                                                           # after the 2 statement we know that the card is an ace and the score would exceed 21 so we only add the ace as a 1
+            dealer_sum = dealer_sum + 1
+
+    while len(player_cards) != 2:                                                       # Generate player's cards
+        player_cards_drawn = len(player_cards)
+
+        def gen_player_card():
+            ran = random.uniform(0, 13)
+            player_cards.append(cards[int(ran)])
+            player_cards_value.append(cards_value[int(ran)])
+        gen_player_card()
+
+        player_new_card = player_cards_value[player_cards_drawn]
+
+        if player_cards_value[player_cards_drawn] != 11:
+            player_sum = player_sum + player_new_card
+        elif player_cards_value[player_cards_drawn] == 11 and player_sum + 11 <= 21:
+            player_sum = player_sum + player_new_card
+        else:
+            player_sum = player_sum + 1
 
     print("player: " + player_cards[0] + " " + player_cards[1], end=" ")
     print(player_sum)
     print("Dealer: " + dealer_cards[0], end=" ")
     print(dealer_cards_value[0])
 
-    while player_sum <= 20:
-        choice = "stand"
-        #input("stand or hit ")
+    while player_sum < 21:  # Player score is under 21
+        choice = input("stand or hit ")
         if choice == "stand":
             print("Player: ", end="")
             print(player_cards, end="")
@@ -61,18 +67,16 @@ for x in range(1000):
             break
 
         elif choice == "hit":
-            player_aces = 0
-            ran = random.uniform(0, 13)
-            player_cards.append(cards[int(ran)])
-            player_cards_value.append(cards_value[int(ran)])
+            player_cards_drawn = len(player_cards)
+            gen_player_card()
+            player_new_card = player_cards_value[player_cards_drawn]
 
-            for item in player_cards:                                                               # Keeps tally of player's aces
-                if item == "ace":
-                    player_aces = player_aces + 1
-            if player_aces >= 1:
-                player_sum = sum(player_cards_value) - (player_aces - 1) * 10
+            if player_cards_value[player_cards_drawn] != 11:
+                player_sum = player_sum + player_new_card
+            elif player_cards_value[player_cards_drawn] == 11 and player_sum + 11 <= 21:
+                player_sum = player_sum + player_new_card
             else:
-                player_sum = sum(player_cards_value)
+                player_sum = player_sum + 1
 
             print("Player: ", end="")
             print(player_cards, end=" ")
@@ -82,32 +86,27 @@ for x in range(1000):
             print(dealer_sum)
 
     while dealer_sum < 16:
-        ran = random.uniform(0, 13)
-        dealer_cards.append(cards[int(ran)])
-        dealer_cards_value.append(cards_value[int(ran)])
+        dealer_cards_drawn = len(dealer_cards)
+        gen_dealer_card()
+        dealer_new_card = dealer_cards_value[dealer_cards_drawn]
 
-        dealer_aces = 0  # Sets dealer_aces to 0 again, so we can use the fuction from before again
-        for item in dealer_cards:  # Keeps tally of dealer's aces
-            if item == "ace":
-                dealer_aces = dealer_aces + 1  # 1'
-
-        if dealer_aces > 1:
-            dealer_sum = sum(dealer_cards_value) - (dealer_aces - 1) * 10
+        if dealer_cards_value[dealer_cards_drawn] != 11:
+            dealer_sum = dealer_sum + dealer_new_card
+        elif dealer_cards_value[dealer_cards_drawn] == 11 and dealer_sum + 11 <= 21:
+            dealer_sum = dealer_sum + dealer_new_card
         else:
-            dealer_sum = sum(dealer_cards_value)
+            dealer_sum = dealer_sum + 1
 
         print("Dealer: ", end="")
         print(dealer_cards, end=" ")
         print(dealer_sum, end=" ")
         print("aces ", end=" ")
-        print(dealer_aces)
 
     if player_sum > 21:
         print("Crash")
-    elif dealer_sum-player_sum == 0:
+    elif dealer_sum - player_sum == 0:
         print("tie")
-    elif dealer_sum-player_sum < 0 or dealer_sum > 21:
+    elif dealer_sum - player_sum < 0 or dealer_sum > 21:
         print("win")
-    elif dealer_sum-player_sum > 0:
+    elif dealer_sum - player_sum > 0:
         print("lost")
-
