@@ -1,8 +1,9 @@
 import random
 random.seed()
+import settings
 
-cards = ["ace", "two", "tree", "four", "five", "six", "seven", "eight", "nine", "ten", "jack", "queen", "king"]
-cards_value = [11, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10, 10]
+settings.cards
+settings.cards_value
 
 money = 100
 money_won = 0
@@ -17,6 +18,8 @@ while playing == "yes":
     player_cards = []
     player_cards_value = []
 
+    player_crash = False
+    dealer_crash = False
     player_sum = 0
     dealer_sum = 0
     allow_bet = 0
@@ -38,8 +41,8 @@ while playing == "yes":
 
         def gen_dealer_card():                                                          # Creating the function to generate a random card
             ran = random.uniform(0, 13)
-            dealer_cards.append(cards[int(ran)])
-            dealer_cards_value.append(cards_value[int(ran)])
+            dealer_cards.append(settings.cards[int(ran)])
+            dealer_cards_value.append(settings.cards_value[int(ran)])
         gen_dealer_card()
 
         dealer_new_card = dealer_cards_value[dealer_cards_drawn]                        # We use the length of the list from before to find the newest card
@@ -56,8 +59,8 @@ while playing == "yes":
 
         def gen_player_card():
             ran = random.uniform(0, 13)
-            player_cards.append(cards[int(ran)])
-            player_cards_value.append(cards_value[int(ran)])
+            player_cards.append(settings.cards[int(ran)])
+            player_cards_value.append(settings.cards_value[int(ran)])
         gen_player_card()
 
         player_new_card = player_cards_value[player_cards_drawn]
@@ -120,16 +123,22 @@ while playing == "yes":
         print(dealer_cards, end=" ")
         print(dealer_sum)
 
-    if (dealer_cards_value[0] == 11 and dealer_cards_value[1] == 10) or (dealer_cards_value[1] == 11 and dealer_cards_value[0] == 10):
+    if player_sum > 21:
+        player_crash = True
+    if dealer_sum > 21:
+        dealer_crash = True
+
+
+    if (player_cards_value[0] == 11 and player_cards_value[1] == 10) or (player_cards_value[1] == 11 and player_cards_value[0] == 10):
         money = money + Bet * 3 + Bet
         print("Blackjack +", end="")
         print(Bet*3)
+    elif dealer_sum - player_sum == 0 or dealer_crash == True and player_crash == True:
+        money = money + Bet
+        print("tie")
     elif player_sum > 21:
         print("crash -", end="")
         print(Bet)
-    elif dealer_sum - player_sum == 0:
-        money = money + Bet
-        print("tie")
     elif dealer_sum - player_sum < 0 or dealer_sum > 21:
         money = money + Bet * 2 + Bet
         print("win +", end="")
